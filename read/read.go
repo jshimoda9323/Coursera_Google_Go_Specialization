@@ -31,7 +31,7 @@ func main() {
         num, e := fmt.Sscanf(line, "%s %s", &fname, &lname)
         if e != nil { fmt.Println(e); return }
         if num > 0 {
-            persons = append(persons, Person{fname: fmt.Sprintf("%20.20s", fname), lname: fmt.Sprintf("%20.20s", lname)})
+            persons = append(persons, Person{fname: fmt.Sprintf("%-20.20s", fname), lname: fmt.Sprintf("%-20.20s", lname)})
         }
     }
 
