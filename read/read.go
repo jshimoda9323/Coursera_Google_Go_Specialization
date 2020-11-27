@@ -31,16 +31,12 @@ func main() {
         num, e := fmt.Sscanf(line, "%s %s", &fname, &lname)
         if e != nil { fmt.Println(e); return }
         if num > 0 {
-            fname_size := 20
-            if len(fname) < 20 { fname_size = len(fname) }
-            lname_size := 20
-            if len(lname) < 20 { lname_size = len(lname) }
-            persons = append(persons, Person{fname: fname[:fname_size], lname: lname[:lname_size]})
+            persons = append(persons, Person{fname: fmt.Sprintf("%20.20s", fname), lname: fmt.Sprintf("%20.20s", lname)})
         }
     }
 
-    for _, perp := range(persons) {
-        fmt.Println(perp.fname + " " + perp.lname)
+    for _, peep := range(persons) {
+        fmt.Println(peep.fname + " " + peep.lname)
     }
 
     return
