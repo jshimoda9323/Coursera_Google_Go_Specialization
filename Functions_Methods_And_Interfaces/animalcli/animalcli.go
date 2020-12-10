@@ -40,7 +40,6 @@ func (snake Snake) Speak() {
     fmt.Println("hsss")
 }
 
-type MyInt int
 func main() {
     input_strings := make([]string, 3, 3)
     animals := make(map[string]Animal)
