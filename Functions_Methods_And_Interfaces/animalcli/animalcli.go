@@ -50,7 +50,6 @@ func main() {
             fmt.Println("Invalid input.")
             continue input_loop
         }
-        fmt.Println("DEBUG: Got: '"+input_strings[0]+"' '"+input_strings[1]+"' '"+input_strings[2]+"'")
         switch input_strings[0] {
         case "newanimal":
             if _, animal_exists := animals[input_strings[1]]; animal_exists {
