@@ -7,7 +7,7 @@ type Animal interface {
     Speak()
 }
 
-type Cow struct { name string }
+type Cow struct { }
 func (cow Cow) Eat() {
     fmt.Println("grass")
 }
@@ -18,7 +18,7 @@ func (cow Cow) Speak() {
     fmt.Println("moo")
 }
 
-type Bird struct { name string }
+type Bird struct { }
 func (bird Bird) Eat() {
     fmt.Println("worms")
 }
@@ -29,7 +29,7 @@ func (bird Bird) Speak() {
     fmt.Println("peep")
 }
 
-type Snake struct { name string }
+type Snake struct { }
 func (snake Snake) Eat() {
     fmt.Println("mice")
 }
@@ -48,6 +48,8 @@ func main() {
         num, scanf_err := fmt.Scanf("%s %s %s", &input_strings[0], &input_strings[1], &input_strings[2])
         if scanf_err != nil || num != 3 {
             fmt.Println("Invalid input.")
+            fmt.Println("Usage: animalcli newanimal <name> <type>")
+            fmt.Println("       query <name> <function>")
             continue input_loop
         }
         switch input_strings[0] {
@@ -58,11 +60,11 @@ func main() {
             }
             switch input_strings[2] {
             case "cow":
-                animals[input_strings[1]] = Cow { name: input_strings[1] }
+                animals[input_strings[1]] = Cow { }
             case "bird":
-                animals[input_strings[1]] = Bird { name: input_strings[1] }
+                animals[input_strings[1]] = Bird { }
             case "snake":
-                animals[input_strings[1]] = Snake { name: input_strings[1] }
+                animals[input_strings[1]] = Snake { }
             default:
                 fmt.Println("Invalid animal type '"+input_strings[2]+"'")
             }
