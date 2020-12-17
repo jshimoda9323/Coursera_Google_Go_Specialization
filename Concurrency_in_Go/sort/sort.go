@@ -2,7 +2,7 @@ package main
 import "fmt"
 import "strconv"
 
-func bubbleSortBy4(items []int) []int {
+func sortBy4(items []int) []int {
     if items == nil {
         return(nil)
     }
@@ -22,7 +22,7 @@ func bubbleSortBy4(items []int) []int {
         if chunk_size > 0 {
             end := start + chunk_size
             ch := make(chan []int)
-            go internalBubbleSort(items[start:end], ch)
+            go bubbleSort(items[start:end], ch)
             start = start + chunk_size
             channels = append(channels, ch)
         }
@@ -35,7 +35,7 @@ func bubbleSortBy4(items []int) []int {
     return(sorted)
 }
 
-func internalBubbleSort(items []int, ch chan []int) {
+func bubbleSort(items []int, ch chan []int) {
     fmt.Println("Sorting the following integers")
     for _, v := range(items) {
         fmt.Println(v)
@@ -93,7 +93,7 @@ func main() {
         }
         input_list = append(input_list, conv_int)
     }
-    sorted_list := bubbleSortBy4(input_list)
+    sorted_list := sortBy4(input_list)
     fmt.Println("Final sorted list:")
     for _, v := range(sorted_list) {
         fmt.Println(strconv.Itoa(v))
