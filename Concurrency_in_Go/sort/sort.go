@@ -2,32 +2,37 @@ package main
 import "fmt"
 import "strconv"
 
-func sortBy4(items []int) []int {
+func sortByN(items []int, n_threads int) []int {
     if items == nil {
         return(nil)
     }
-    chunk_sizes := make([]int, 4, 4)
-    base_size := len(items) / 4
-    rem_size := len(items) % 4
-    for i := 0; i < 4; i++ {
-        chunk_sizes[i] = base_size
+    chunk_sizes := make([]int, 0, n_threads)
+    base_size := len(items) / n_threads
+    rem_size := len(items) % n_threads
+    for i := 0; i < n_threads; i++ {
+        chunk_size := base_size
         if rem_size > 0 {
-            chunk_sizes[i]++
+            chunk_size++
             rem_size--
         }
-    }
-    channels := make([]chan []int, 0, 4)
-    start := 0
-    for _, chunk_size := range(chunk_sizes) {
         if chunk_size > 0 {
-            end := start + chunk_size
-            ch := make(chan []int)
-            go bubbleSort(items[start:end], ch)
-            start = start + chunk_size
-            channels = append(channels, ch)
+            chunk_sizes = append(chunk_sizes, chunk_size)
         }
     }
-    sorted := make([]int, 0, 0)
+    channels := make([]chan []int, 0, n_threads)
+    start := 0
+    for _, chunk_size := range(chunk_sizes) {
+        end := start + chunk_size
+        ch := make(chan []int)
+        //fmt.Println("Sorting portion "+strconv.Itoa(i)+" of "+strconv.Itoa(len(chunk_sizes)))
+        //for _, v := range(items[start:end]) {
+        //    fmt.Println(strconv.Itoa(v))
+        //}
+        go bubbleSort(items[start:end], ch)
+        start = start + chunk_size
+        channels = append(channels, ch)
+    }
+    sorted := make([]int, 0, len(channels))
     for _, ch := range(channels) {
         sorted_part := <-ch
         sorted = merge(sorted, sorted_part)
@@ -93,7 +98,7 @@ func main() {
         }
         input_list = append(input_list, conv_int)
     }
-    sorted_list := sortBy4(input_list)
+    sorted_list := sortByN(input_list, 4)
     fmt.Println("Final sorted list:")
     for _, v := range(sorted_list) {
         fmt.Println(strconv.Itoa(v))
