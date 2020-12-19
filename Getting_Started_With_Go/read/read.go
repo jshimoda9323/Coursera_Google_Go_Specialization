@@ -5,8 +5,18 @@ import "fmt"
 
 func main() {
 
-    dat, e := ioutil.ReadFile("input_file")
-    if e != nil { fmt.Println(e); return }
+    var input_file_name string
+    fmt.Println("Enter the name of the input file:")
+    _, ename := fmt.Scanln(&input_file_name)
+    if ename != nil {
+        fmt.Println("Bad filename")
+        return
+    }
+    dat, e := ioutil.ReadFile(input_file_name)
+    if e != nil {
+        fmt.Println(e);
+        return
+    }
     var lines []string = make([]string, 0, 10)
     var curline string = ""
     for _, val := range(dat) {

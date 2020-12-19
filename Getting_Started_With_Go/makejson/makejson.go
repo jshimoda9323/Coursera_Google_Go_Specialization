@@ -15,7 +15,7 @@ func main() {
     var barr []byte
     var num int
 
-    fmt.Println("Enter a name:")
+    fmt.Println("Enter a name followed by a blank line:")
     for ; err == nil && err != io.EOF; {
         num, err = fmt.Scanf("%s",&name_part)
         if num > 0 {
@@ -23,7 +23,7 @@ func main() {
         }
     }
     person["name"] = strings.Join(name_parts, " ")
-    fmt.Println("Enter an address:")
+    fmt.Println("Enter an address followed by a blank line:")
     err = nil
     for ; err == nil && err != io.EOF; {
         num, err = fmt.Scanf("%s",&address_part)

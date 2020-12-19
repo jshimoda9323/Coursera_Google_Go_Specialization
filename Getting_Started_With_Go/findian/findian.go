@@ -7,6 +7,7 @@ func main() {
     var err error = nil
     var complete_string string = ""
     var partial string
+    fmt.Println("Enter text.  End your text with a blank line to find 'ian'.")
     for ; err == nil; {
         _, err = fmt.Scanf("%s",&partial)
         if err == io.EOF { break; }
