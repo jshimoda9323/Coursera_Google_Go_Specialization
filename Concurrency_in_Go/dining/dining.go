@@ -11,7 +11,6 @@ type Philosopher struct {
     leftChopstick, rightChopstick *Chopstick
 }
 
-// Pass iteration_count < 1 for an infinite loop
 func (phil *Philosopher) Eat(iteration_count int, can_eat chan bool, ready chan int, done chan int) {
     for i := 0;; {
         if iteration_count > 0 {
@@ -28,8 +27,8 @@ func (phil *Philosopher) Eat(iteration_count int, can_eat chan bool, ready chan 
         // Obtain locks
         phil.leftChopstick.Lock()
         phil.rightChopstick.Lock()
-        // Eat
         fmt.Println("starting to eat "+strconv.Itoa(phil.id+1))
+        // Eating now...!!!
         fmt.Println("finishing eating "+strconv.Itoa(phil.id+1))
         // Free locks
         phil.leftChopstick.Unlock()
@@ -50,18 +49,6 @@ func main() {
     philosophers := make([]*Philosopher, len(chopsticks))
     // Keep track of who is eating
     is_eating := make([]bool, len(philosophers))
-    // Assign chopsticks to philosophers, and things.
-    for i := 0; i < len(chopsticks); i++ {
-        chopsticks[i] = new(Chopstick)
-    }
-    for i := 0; i < len(philosophers); i++ {
-        philosophers[i] = new(Philosopher)
-        is_eating[i] = false
-        philosophers[i].id = i
-        philosophers[i].leftChopstick = chopsticks[i]
-        philosophers[i].rightChopstick = chopsticks[(i+1)%len(chopsticks)]
-    }
-
     // One common channel for receiving ready signal from philosophers.
     ready := make(chan int)
     // A channel per philosopher for sending eat signal to philosophers.
@@ -71,43 +58,52 @@ func main() {
     // A queue of ids who are ready to eat.
     ready_queue := list.New()
 
+    // Assign chopsticks to philosophers, and things.
+    for i := 0; i < len(chopsticks); i++ {
+        chopsticks[i] = new(Chopstick)
+    }
+    for i := 0; i < len(philosophers); i++ {
+        is_eating[i] = false
+        can_eat[i] = make(chan bool)
+        philosophers[i] = new(Philosopher)
+        philosophers[i].id = i
+        philosophers[i].leftChopstick = chopsticks[i]
+        philosophers[i].rightChopstick = chopsticks[(i+1)%len(chopsticks)]
+    }
+
     // The philosophers attempt to start eating
     for i, phil := range(philosophers) {
-        can_eat[i] = make(chan bool)
         go phil.Eat(times_to_eat, can_eat[i], ready, done)
     }
 
-    // Iterate until all philosophers are done (may be forever)
+    // Iterate until all philosophers are done.
     available_threads := simultaneous_eaters
     num_done := 0
-    dispatch_loop: for {
+    for {
         select {
         case ready_id := <-ready:
-            // Push this id onto the ready queue.
             ready_queue.PushBack(ready_id)
             if is_eating[ready_id] {
                 is_eating[ready_id] = false
                 available_threads++
             }
-            // Dispatch the next available id (may not necessarily be the first in the queue)
-            dispatch(&available_threads, is_eating, can_eat, ready_queue)
-        case v := <-done:
-            if is_eating[v] {
-                is_eating[v] = false
+        case ready_id := <-done:
+            num_done++
+            if is_eating[ready_id] {
+                is_eating[ready_id] = false
                 available_threads++
             }
-            // Dispatch the next available id (may not necessarily be the first in the queue)
-            dispatch(&available_threads, is_eating, can_eat, ready_queue)
-            num_done++
-            if num_done >= len(philosophers) { break dispatch_loop }
         }
+        if num_done >= len(philosophers) { break }
+        // Dispatch the next available id (may not necessarily be the first in the queue)
+        dispatch(&available_threads, is_eating, can_eat, ready_queue)
     }
     return
 }
 
 func dispatch(available_threads *int, is_eating []bool, can_eat []chan bool, ready_queue *list.List) {
     if *available_threads > 0 {
-        // Find the next appropriate philosopher that can eat.  Cannot be adjacent to current eaters.
+        // Find the next appropriate philosopher that can eat.  Cannot be adjacent to current eaters!
         for e := ready_queue.Front(); e != nil; e = e.Next() {
             e_idx := e.Value.(int)
             l_idx := e_idx - 1
