@@ -1,49 +1,48 @@
 package main
 
-import "io"
 import "fmt"
 import "strconv"
 import "math"
 
 func main() {
 
-    fmt.Println("Enter space separated values for accelearation, initial velocity and initial displacement:")
-    var num int
-    var err error = nil
-    var input string
-    input_numbers := make([]float64, 0, 3)
-    for ; err == nil && err != io.EOF && len(input_numbers) < 10; {
-        num, err = fmt.Scanf("%s",&input)
-        if num > 0 {
-            f, e := strconv.ParseFloat(input, 64)
-            if e == nil {
-                input_numbers = append(input_numbers, f)
-            } else {
-                fmt.Println("Error reading number!")
-                return
-            }
-        }
-    }
-    if len(input_numbers) != 3 {
-        fmt.Println("Must input 3 space separated numbers.")
+    fmt.Println("Enter space separated values for accelearation, initial velocity and initial displacement followed by a blank line:")
+    var input [3]string
+    var input_numbers [3]float64
+    num, err := fmt.Scanln(&input[0], &input[1], &input[2])
+    if err != nil || num != 3 {
+        if err != nil { fmt.Println(err) }
+        fmt.Println("Error: Must input three numbers")
         return
     }
+    f1, e1 := strconv.ParseFloat(input[0], 64)
+    f2, e2 := strconv.ParseFloat(input[1], 64)
+    f3, e3 := strconv.ParseFloat(input[2], 64)
+    if e1 != nil || e2 != nil || e3 != nil {
+        fmt.Println("Error parsing floating point number.")
+        return
+    }
+    input_numbers[0] = f1
+    input_numbers[1] = f2
+    input_numbers[2] = f3
 
     fn := GenDisplaceFn(input_numbers[0], input_numbers[1], input_numbers[2])
 
     num = 1
-    for ; num == 1; {
+    for {
         fmt.Println("Enter duration:")
-        num, err = fmt.Scanf("%s",&input)
-        if num > 0 {
-            t, e1 := strconv.ParseFloat(input, 64)
-            if e1 == nil {
-                fmt.Println("Computed displacement: " + strconv.FormatFloat(fn(t), 'E', -1, 64))
-            } else {
-                fmt.Println("Error reading number!")
-                return
-            }
+        num, err := fmt.Scanln(&input[0])
+        if err != nil || num != 1 {
+            if err != nil { fmt.Println(err) }
+            fmt.Println("Error: Must enter a single floating point number.")
+            return
         }
+        t, e4 := strconv.ParseFloat(input[0], 64)
+        if e4 != nil {
+            fmt.Println("Error parsing floating point number.")
+            return
+        }
+        fmt.Println("Computed displacement: " + strconv.FormatFloat(fn(t), 'E', -1, 64))
     }
     return
 }
