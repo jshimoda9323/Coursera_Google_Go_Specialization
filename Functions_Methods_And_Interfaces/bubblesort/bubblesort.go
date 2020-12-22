@@ -26,15 +26,15 @@ func main() {
 }
 
 func BubbleSort(inSli []int) {
-    for idx1, val1 := range(inSli) {
-        for idx2, val2 := range(inSli) {
-            if val1 < val2 {
-                Swap(&inSli[idx1], &inSli[idx2])
+    for i := 0; i < len(inSli); i++ {
+        for j := 0; j < len(inSli)-1-i; j++ {
+            if inSli[j] > inSli[j+1] {
+                Swap(inSli, j)
             }
         }
     }
 }
 
-func Swap(a, b *int) {
-    *a, *b = *b, *a
+func Swap(sl []int, i int) {
+    sl[i], sl[i+1] = sl[i+1], sl[i]
 }
