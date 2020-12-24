@@ -53,6 +53,7 @@ func main() {
 
     input_loop: for ; ; {
         var animal Animal
+        fmt.Print("Enter an animal (cow, bird, or snake), followed by a space, followed by an action (eat, move, or speak)> ")
         num, scanf_err := fmt.Scanf("%s %s", &input_strings[0], &input_strings[1])
         if scanf_err != nil || num != 2 {
             fmt.Println("Error reading input.")
