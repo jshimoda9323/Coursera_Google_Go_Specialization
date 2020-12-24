@@ -43,6 +43,9 @@ func (snake Snake) Speak() {
 func main() {
     input_strings := make([]string, 3, 3)
     animals := make(map[string]Animal)
+    fmt.Println("The following commands are available:")
+    fmt.Println("newanimal <name> [cow|bird|snake]")
+    fmt.Println("query <name> [eat|move|speak]")
     input_loop: for ; ; {
         fmt.Print(">")
         num, scanf_err := fmt.Scanf("%s %s %s", &input_strings[0], &input_strings[1], &input_strings[2])
